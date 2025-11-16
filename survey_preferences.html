@@ -1,29 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Subject Preference Survey</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="utils.js"></script>
+    <script src="teacher_only.js"></script>
 </head>
-<body class="p-4">
 
-<div class="container">
-    <h2 class="mb-4">Subject Preference Survey</h2>
+<body>
+    <nav class="navbar navbar-dark bg-dark p-2">
+        <div class="container-fluid">
+            <a class="btn btn-outline-light" href="dashboard_teacher.html">← Back</a>
+            <span class="navbar-brand ms-3">Preference Survey</span>
+            <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
+        </div>
+    </nav>
 
-    <p class="text-muted">
-        Rate each subject from <strong>1 to 10</strong>.  
-        Minimum total required: <span id="minRequired"></span>
-    </p>
+    <div class="container mt-5">
 
-    <div id="subjectContainer"></div>
 
-    <p id="validationMsg" class="text-danger mt-3" style="display:none;"></p>
+        <h2 class="mb-4">Subject Preferences</h2>
 
-    <button id="submitBtn" class="btn btn-primary mt-4" disabled>Submit Preferences</button>
-</div>
+        <p class="text-muted">
+            Rate each subject from <strong>1 to 10</strong>.
+            Minimum total required: <span id="minRequired"></span>
+        </p>
 
-<script src="utils.js"></script>
-<script src="survey_preferences.js"></script>
+        <div id="subjectContainer"></div>
+
+        <p id="validationMsg" class="text-danger mt-3" style="display:none;"></p>
+
+        <button id="submitBtn" class="btn btn-primary mt-4" disabled>Submit Preferences</button>
+    </div>
+
+    <script src="survey_preferences.js"></script>
 
 </body>
+
 </html>

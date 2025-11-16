@@ -7,27 +7,47 @@
 
     <style>
         .timetable-cell {
+            position: relative;
+            /* allow absolute children */
             min-width: 120px;
             height: 90px;
-            font-size: 0.85rem;
             background: #f8f9fa;
+            padding: 0;
+            /* let inner element define spacing */
+            font-size: 0.85rem;
+        }
+
+        .timetable-entry-lecture,
+        .timetable-entry-lab {
+            position: absolute;
+            /* fill entire cell */
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            right: 4px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
         }
 
         .timetable-entry-lecture {
-            background: #5790e4;
-            color: white;
-            padding: 4px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            background: #0d6efd;
+            color: #ffffff;
         }
+
         .timetable-entry-lab {
-            background: #50ffe5;
-            color: rgb(0, 0, 0);
-            padding: 4px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            background: #5790e4;
+            color: #000;
         }
     </style>
+
+    <script src="utils.js"></script>
+    <script src="teacher_only.js"></script>
 
 
 </head>
@@ -37,13 +57,18 @@
     <nav class="navbar navbar-dark bg-dark">
         <div class="container-fluid">
             <span class="navbar-brand">Dashboard</span>
+
+            <a href="survey_preferences.html" class="btn btn-outline-light me-2">Preferences</a>
+            <a href="edit_availability.html" class="btn btn-outline-light me-2">Availability</a>
+
             <button class="btn btn-danger" id="logoutBtn">Logout</button>
         </div>
     </nav>
 
+
     <div class="container mt-5">
         <h2>Welcome <span id="username">...</span></h2>
-        
+
     </div>
 
     <div class="container mt-5" id="timetable-container" style="display:none;">
@@ -71,8 +96,7 @@
 
 
 
-    <script src="utils.js"></script>
-    <script src="dashboard.js"></script>
+    <script src="dashboard_teacher.js"></script>
 
 
 </body>

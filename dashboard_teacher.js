@@ -1,6 +1,3 @@
-// dashboard.js
-const HOST = "http://127.0.0.1:8000";
-
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SLOT_LABELS = [
   "7:30-8:25",
@@ -19,10 +16,7 @@ const NUM_SLOTS = SLOT_LABELS.length; // 8 slots
 // ----------------- network & auth -----------------
 async function loadProfile() {
   try {
-    const res = await authFetch(`${HOST}/api/auth/me/`);
-    if (!res.ok) throw new Error("Not authenticated");
-
-    const data = await res.json();
+    const data = JSON.parse(localStorage.getItem("user_data"));
     document.getElementById("username").innerText = data.user.full_name
 
     if (data.timetable) {
@@ -36,7 +30,7 @@ async function loadProfile() {
 
 document.getElementById("logoutBtn").onclick = async () => {
   try { await fetch(`${HOST}/api/auth/logout/`, { method: "POST" }); } catch (e) { }
-  clearTokens();
+  clearData();
   window.location.href = "login.html";
 };
 
@@ -76,13 +70,12 @@ function renderTimetable(timetableArray) {
   // Fill grid with correct mapping
   for (const entry of timetableArray) {
     const { day, slot } = getDaySlot(entry.time_slot);
-
     if (slot < NUM_SLOTS && day < NUM_DAYS) {
       grid[slot][day] = entry;
     }
   }
 
-  // Build header: Time + Days
+  // ---------------- HEADER ----------------
   const thead = table.querySelector("thead");
   thead.innerHTML = "";
   const headRow = document.createElement("tr");
@@ -101,48 +94,61 @@ function renderTimetable(timetableArray) {
 
   thead.appendChild(headRow);
 
-  // Body rows
+  // ---------------- BODY: CREATE EMPTY ROWS FIRST ----------------
   tbody.innerHTML = "";
+  const rows = [];
 
   for (let slot = 0; slot < NUM_SLOTS; slot++) {
     const tr = document.createElement("tr");
 
-    // time label
     const th = document.createElement("th");
     th.className = "table-secondary text-center align-middle";
     th.innerText = SLOT_LABELS[slot];
     tr.appendChild(th);
 
-    for (let day = 0; day < NUM_DAYS; day++) {
+    tbody.appendChild(tr);
+    rows.push(tr);
+  }
+
+  // ---------------- COLUMN-BY-COLUMN RENDERING ----------------
+  for (let day = 0; day < NUM_DAYS; day++) {
+    for (let slot = 0; slot < NUM_SLOTS; slot++) {
+      const cell = grid[slot][day];
+
+      // Skip cells "covered" by a rowspan from previous row
+      if (cell && cell._skip) continue;
+
       const td = document.createElement("td");
       td.className = "timetable-cell align-middle";
 
-      const cell = grid[slot][day];
       if (cell) {
-        if (cell.session_type.toLowerCase() === "lecture") {
-          td.innerHTML = `
-          <div class="timetable-entry-lecture p-2">
-            <div><strong>${cell.time_slot} - ${escapeHtml(cell.session_type)}</strong></div>
-            <div style="font-size:0.85em">Div: ${escapeHtml(String(cell.division.name))} &nbsp; • &nbsp; Sub: ${escapeHtml(String(cell.subject.code))}</div>
-            <div style="font-size:0.85em">Room: ${escapeHtml(String(cell.classroom.number))}</div>
-          </div>
-        `;
-        } else {
-          td.innerHTML = `
-          <div class="timetable-entry-lab p-2">
-            <div><strong>${cell.time_slot} - ${escapeHtml(cell.session_type)}</strong></div>
-            <div style="font-size:0.85em">Div: ${escapeHtml(String(cell.division.name))} &nbsp; • &nbsp; Sub: ${escapeHtml(String(cell.subject.code))}</div>
-            <div style="font-size:0.85em">Room: ${escapeHtml(String(cell.classroom.number))}</div>
-          </div>
-        `;
+        const isLab = cell.session_type.toLowerCase() === "lab";
+
+        if (isLab) {
+          td.rowSpan = 2;
+
+          // mark the next slot in this column as skip
+          if (slot + 1 < NUM_SLOTS) {
+            if (!grid[slot + 1][day]) grid[slot + 1][day] = {};
+            grid[slot + 1][day]._skip = true;
+          }
         }
+
+        td.innerHTML = `
+          <div class="timetable-entry-${isLab ? "lab" : "lecture"} p-2">
+            <strong>
+            <div>${escapeHtml(cell.subject.name)}</div>
+            <div style="font-size:0.85em">${escapeHtml(String(cell.division.name))} &nbsp; • &nbsp; ${escapeHtml(String(cell.subject.code))}</div>
+            <div style="font-size:0.85em">${escapeHtml(String(cell.classroom.number))}</div>
+            </strong>
+          </div>
+        `;
       }
 
-      tr.appendChild(td);
+      rows[slot].appendChild(td);
     }
-
-    tbody.appendChild(tr);
   }
 }
+
 
 loadProfile();

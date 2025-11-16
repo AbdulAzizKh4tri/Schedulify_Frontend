@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Teachers</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .table thead th {
+            background: #212529;
+            color: white;
+        }
+
+        .modal-header {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .availability-cell {
+            height: 40px;
+            cursor: pointer;
+            user-select: none;
+            color: #fff;
+            font-weight: 500;
+            padding: 0;
+        }
+
+        .avail-1 {
+            background: #28a745 !important;
+        }
+
+        .avail-0 {
+            background: #dc3545 !important;
+        }
+
+        .small-table th,
+        .small-table td {
+            font-size: 12px;
+            padding: 4px;
+            text-align: center;
+        }
+    </style>
+
+    <script src="utils.js"></script>
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-dark bg-dark p-2">
+        <div class="container-fluid">
+            <a class="btn btn-outline-light" href="dashboard_admin.html">← Back</a>
+            <span class="navbar-brand ms-3">Teachers</span>
+            <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Teachers</h3>
+
+            <div>
+                <input type="file" id="csvFile" accept=".csv" class="form-control d-inline-block" style="width:200px;">
+                <button class="btn btn-secondary" onclick="uploadCSV()">Upload CSV</button>
+                <button class="btn btn-primary ms-3" onclick="openCreateModal()">+ Add Teacher</button>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-bordered text-center align-middle" id="teachersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Staff ID</th>
+                            <th>Department</th>
+                            <th>Max Load</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="teachersBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- CREATE/EDIT MODAL -->
+    <div class="modal fade" id="teacherModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Add Teacher</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="editId">
+
+                    <div class="row">
+                        <div class="col-md-4">
+
+                            <div class="mb-3">
+                                <label class="form-label">User</label>
+                                <select id="userSelect" class="form-select"></select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Staff ID</label>
+                                <input type="text" id="staffId" class="form-control">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Department</label>
+                                <select id="deptSelect" class="form-select"></select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Max Workload</label>
+                                <input type="number" id="maxLoad" class="form-control">
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-8">
+
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5>Availability</h5>
+
+                                <div>
+                                    <button class="btn btn-sm btn-success" onclick="applyShift1()">Shift 1</button>
+                                    <button class="btn btn-sm btn-primary" onclick="applyShift2()">Shift 2</button>
+                                </div>
+                            </div>
+
+                            <div class="table-responsive mt-2">
+                                <table class="table table-bordered small-table" id="availability-table">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Mon</th>
+                                            <th>Tue</th>
+                                            <th>Wed</th>
+                                            <th>Thu</th>
+                                            <th>Fri</th>
+                                            <th>Sat</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="availability-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" onclick="saveTeacher()">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="teachers.js"></script>
+
+</body>
+
+</html>

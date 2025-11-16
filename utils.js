@@ -1,3 +1,5 @@
+const HOST = "http://127.0.0.1:8000";
+
 function escapeHtml(str) {
   return String(str)
     .replaceAll("&", "&amp;")
@@ -13,9 +15,22 @@ function setTokens(access, refresh) {
     localStorage.setItem("refresh", refresh);
 }
 
-function clearTokens() {
+function getUserData() {
+    const data = localStorage.getItem("user_data");
+    return data ? JSON.parse(data) : null;
+}
+
+async function setUserData(){
+    const res = await authFetch(`${HOST}/api/auth/me/`);
+    const data = await res.json();
+    localStorage.setItem("user_data", JSON.stringify(data));
+}
+
+function clearData() {
     localStorage.removeItem("access");
     localStorage.removeItem("refresh");
+    localStorage.removeItem("user_data");
+    window.location.href = "login.html";
 }
 
 function getAccess() {
@@ -31,7 +46,7 @@ async function refreshAccessToken() {
     const refresh = getRefresh();
     if (!refresh) return null;
 
-    const res = await fetch("/api/auth/refresh/", {
+    const res = await fetch(`${HOST}/api/auth/refresh/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ refresh })
@@ -40,7 +55,8 @@ async function refreshAccessToken() {
     if (!res.ok) return null;
 
     const data = await res.json();
-    setTokens(data.access, refresh);
+    setTokens(data.access, data.refresh);
+    setUserData();
     return data.access;
 }
 

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Subjects</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f9fb;
+        }
+
+        .table thead th {
+            background: #212529;
+            color: white;
+        }
+
+        .modal-header {
+            background: #0d6efd;
+            color: white;
+        }
+    </style>
+
+    <script src="utils.js"></script>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark p-2">
+        <div class="container-fluid">
+            <a class="btn btn-outline-light" href="dashboard_admin.html">← Back</a>
+            <span class="navbar-brand ms-3">Subjects</span>
+            <button class="btn btn-danger ms-auto" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3>Subjects</h3>
+
+            <div>
+                <input type="file" id="csvFile" accept=".csv" class="form-control d-inline-block" style="width:260px;">
+                <button class="btn btn-secondary" onclick="uploadCSV()">Upload CSV</button>
+                <button class="btn btn-primary ms-3" onclick="openCreateModal()">+ Add Subject</button>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table table-bordered text-center align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Code</th>
+                            <th>Lectures/week</th>
+                            <th>Labs/week</th>
+                            <th>Department</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjectsBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="subjectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Add Subject</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <input type="hidden" id="editId">
+
+                    <div class="mb-3">
+                        <label class="form-label">Subject Name</label>
+                        <input id="subName" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Code</label>
+                        <input id="subCode" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Lectures Per Week</label>
+                        <input id="lecPw" type="number" min="0" class="form-control" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Labs Per Week</label>
+                        <input id="labPw" type="number" min="0" class="form-control" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Department</label>
+                        <select id="deptSelect" class="form-select"></select>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" onclick="saveSubject()">Save</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="subjects.js"></script>
+
+</body>
+
+</html>

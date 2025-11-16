@@ -25,32 +25,7 @@
 </div>
 
 <script src="utils.js"></script>
-<script>
-const HOST = "http://127.0.0.1:8000";
-
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const res = await fetch(`${HOST}/api/auth/login/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            email: email.value,
-            password: password.value
-        })
-    });
-
-    if (!res.ok) {
-        document.getElementById("error").innerText = "Invalid login.";
-        return;
-    }
-
-    const data = await res.json();
-    setTokens(data.access, data.refresh);
-
-    window.location.href = "dashboard.html";
-});
-</script>
+<script src="login.js"></script>
 
 </body>
 </html>

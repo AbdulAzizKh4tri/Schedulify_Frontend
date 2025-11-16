@@ -1,4 +1,3 @@
-const HOST = "http://127.0.0.1:8000";
 
 const subjectContainer = document.getElementById("subjectContainer");
 const submitBtn = document.getElementById("submitBtn");
@@ -6,16 +5,10 @@ const validationMsg = document.getElementById("validationMsg");
 const minRequiredElement = document.getElementById("minRequired");
 
 let subjects = [];
-let teacherDept = null;
-let teacherId = null;
+let teacherData = JSON.parse(localStorage.getItem("user_data")).teacher;
+let teacherDept = teacherData.department.id;
+let teacherId = teacherData.id;
 let requiredTotalMin = 0;
-
-async function getTeacherDepartment() {
-    const res = await authFetch(`${HOST}/api/auth/me/`);
-    const data = await res.json();
-    teacherDept = data.teacher.department;
-    teacherId = data.teacher.id;
-}
 
 async function getSubjects() {
     const res = await authFetch(`${HOST}/api/subjects/?department=${teacherDept}`);
@@ -49,11 +42,11 @@ function renderTable() {
             <td>${escapeHtml(s.code)}</td>
             <td>
                 <input 
+                    id="score_${s.id}"
                     type="number" 
                     class="form-control scoreInput" 
                     data-id="${s.id}" 
                     min="1" max="10" 
-                    value="1"
                 >
             </td>
         </tr>
@@ -117,20 +110,32 @@ submitBtn.onclick = async () => {
         body: JSON.stringify(payload)
     });
 
-    console.log(res);
-
     if (!res.ok) {
         alert("Error submitting preferences");
         return;
     }
 
     alert("Preferences saved successfully!");
-    window.location.href = "dashboard.html";
+    window.location.href = "dashboard_teacher.html";
 };
 
+async function fillPreferences() {
+    const res = await authFetch(`${HOST}/api/preferences/?teacher=${teacherId}`);
+    if (!res.ok) return;
+    const data = await res.json();
+
+
+    data.forEach(pref => {
+        const inp = document.getElementById(`score_${pref.subject.id}`);
+        if (inp) {
+            inp.value = pref.score;
+        }
+    });
+}
+
 async function init() {
-    await getTeacherDepartment();
     await getSubjects();
+    await fillPreferences();
 }
 
 init();
