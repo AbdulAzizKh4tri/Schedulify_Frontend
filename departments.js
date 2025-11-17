@@ -124,12 +124,3 @@ async function uploadCSV() {
     document.getElementById("csvFile").value = "";
     loadDepartments();
 }
-
-
-
-// ------------------------------------------------------
-function logout() {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    window.location.href = "login.html";
-}

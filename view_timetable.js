@@ -148,11 +148,3 @@ function renderGrid(divId) {
         tbody.innerHTML += row;
     }
 }
-
-
-// -----------------------------------------------------
-function logout() {
-    localStorage.removeItem("access");
-    localStorage.removeItem("refresh");
-    window.location.href = "login.html";
-}
