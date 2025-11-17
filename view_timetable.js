@@ -25,7 +25,7 @@ let timetableData = null;
 // LOAD ALL TIMETABLES
 // -----------------------------------------------------
 async function loadTimetables() {
-    const res = await authFetch(`${HOST}/api/timetables/list_timetables/`);
+    const res = await fetch(`${HOST}/api/timetables/list_timetables/`);
     if (!res.ok) return;
 
     const data = await res.json();
@@ -53,7 +53,7 @@ timetableSelect.onchange = async () => {
 
     if (!id) return;
 
-    const res = await authFetch(`${HOST}/api/timetables/${id}/`);
+    const res = await fetch(`${HOST}/api/timetables/${id}/`);
     if (!res.ok) return;
 
     timetableData = await res.json();
