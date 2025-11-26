@@ -1,5 +1,5 @@
 // const HOST = "http://127.0.0.1:8000";
-const HOST = "https://schedulifybackend-9nro.onrender.com/";
+const HOST = "https://schedulify-backend-gemx.onrender.com/"
 
 function escapeHtml(str) {
   return String(str)
